@@ -31,6 +31,8 @@ jobs:
   deploy:
     needs: [build-main]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     container:
       image: texlive/texlive:latest
     steps:
