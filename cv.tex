@@ -1,0 +1,387 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot, % set margins without considering header and footer
+    top=2 cm, % seperation between body and page edge from the top
+    bottom=2 cm, % seperation between body and page edge from the bottom
+    left=2 cm, % seperation between body and page edge from the left
+    right=2 cm, % seperation between body and page edge from the right
+    footskip=1.0 cm, % seperation between body and footer
+    % showframe % for debugging 
+]{geometry} % for adjusting page geometry
+\usepackage[explicit]{titlesec} % for customizing section titles
+\usepackage{tabularx} % for making tables with fixed width columns
+\usepackage{array} % tabularx requires this
+\usepackage[dvipsnames]{xcolor} % for coloring text
+\definecolor{primaryColor}{RGB}{25, 25, 25} % define primary color
+\usepackage{enumitem} % for customizing lists
+\usepackage{fontawesome5} % for using icons
+\usepackage{amsmath} % for math
+\usepackage[
+    pdftitle={Federico Gerardi's CV},
+    pdfauthor={Federico Gerardi},
+    pdfcreator={Overleaf},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref} % for links, metadata and bookmarks
+\usepackage[pscoord]{eso-pic} % for floating text on the page
+\usepackage{calc} % for calculating lengths
+\usepackage{bookmark} % for bookmarks
+\usepackage{lastpage} % for getting the total number of pages
+\usepackage{changepage} % for one column entries (adjustwidth environment)
+\usepackage{paracol} % for two and three column entries
+\usepackage{ifthen} % for conditional statements
+\usepackage{needspace} % for avoiding page brake right after the section title
+\usepackage{iftex} % check if engine is pdflatex, xetex or luatex
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage[default, type1]{sourcesanspro} 
+
+% Some settings:
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt} % remove space before adjustwidth environment
+\pagestyle{empty} % no header or footer
+\setcounter{secnumdepth}{0} % no section numbering
+\setlength{\parindent}{0pt} % no indentation
+\setlength{\topskip}{0pt} % no top skip
+\setlength{\columnsep}{0.15cm} % set column seperation
+\makeatletter
+\let\ps@customFooterStyle\ps@plain % Copy the plain style to customFooterStyle
+\patchcmd{\ps@customFooterStyle}{\thepage}{
+    \color{gray}\textit{\small Federico Gerardi - Page \thepage{} of \pageref*{LastPage}}
+}{}{} % replace number by desired string
+\makeatother
+\pagestyle{customFooterStyle}
+
+\titleformat{\section}{
+    % avoid page braking right after the section title
+    \needspace{4\baselineskip}
+    % make the font size of the section title large and color it with the primary color
+    \Large\color{primaryColor}
+}{
+}{
+}{
+    % print bold title, give 0.15 cm space and draw a line of 0.8 pt thickness
+    % from the end of the title to the end of the body
+    \textbf{#1}\hspace{0.15cm}\titlerule[0.8pt]\hspace{-0.1cm}
+}[] % section title formatting
+
+\titlespacing{\section}{
+    % left space:
+    -1pt
+}{
+    % top space:
+    0.3 cm
+}{
+    % bottom space:
+    0.2 cm
+} % section title spacing
+
+% \renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$} % custom bullet points
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.0 cm,
+        parsep=0cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0.15 cm + 10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights
+
+\newenvironment{highlightsforbulletentries}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights for bullet entries
+
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0.2 cm + 0.00001 cm
+    }{
+        0.2 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+} % new environment for one column entries
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for two column entries
+
+\newenvironment{threecolentry}[3][]{
+    \onecolentry
+    \def\thirdColumn{#3}
+    \setcolumnwidth{1 cm, \fill, 4.5 cm}
+    \begin{paracol}{3}
+    {\raggedright #2} \switchcolumn
+}{
+    \switchcolumn \raggedleft \thirdColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for three column entries
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\color{primaryColor}\linespread{1.5}
+}{
+    \par\kern\topsep
+} % new environment for the header
+
+\newcommand{\placelastupdatedtext}{% \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+  \AddToShipoutPictureFG*{% Add <stuff> to current page foreground
+    \put(
+        \LenToUnit{\paperwidth-2 cm-0.2 cm+0.05cm},
+        \LenToUnit{\paperheight-1.0 cm}
+    ){\vtop{{\null}\makebox[0pt][c]{
+        \small\color{gray}\textit{Last updated in October 2025}\hspace{\widthof{Last updated in October 2025}}
+    }}}%
+  }%
+}%
+
+% save the original href command in a new command:
+\let\hrefWithoutArrow\href
+
+% new command for external links:
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
+
+
+\begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{}
+
+    \placelastupdatedtext
+    \begin{header}
+        \fontsize{20 pt}{20 pt}
+        \textbf{Federico Gerardi}
+
+
+        \normalsize
+        % \mbox{{\footnotesize\faMapMarker*}\hspace*{0.13cm}Rome, Italy}%
+        % \kern 0.25 cm%
+        % \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{mailto:fegerar@proton.me}{{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}fegerar@proton.me}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{tel:+393518032225}{{\footnotesize\faPhone*}\hspace*{0.13cm}+39 351 803 2225}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://fegerar.github.io/}{{\footnotesize\faLink}\hspace*{0.13cm}fegerar.github.io}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://www.linkedin.com/in/federico-gerardi-81407a1a1/}{{\footnotesize\faLinkedinIn}\hspace*{0.13cm}LinkedIn}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://github.com/fegerar}{{\footnotesize\faGithub}\hspace*{0.13cm}fegerar}}%
+    \end{header}
+
+    \vspace{0.1 cm - 0.1 cm}
+
+
+
+\section{Education}
+
+% \begin{twocolentry}{
+%     Mar 2026 – May 2026
+% }
+%     \textbf{ETH Zurich}, Project Mobility
+
+% \end{twocolentry}
+
+% \begin{highlights}
+%     \item \textbf{Thesis:} Thesis Title
+% \end{highlights}
+
+
+\begin{twocolentry}{
+    Aug 2025 – Dec 2025
+}
+    \textbf{University of Oslo}, Erasmus+ Exchange
+
+\end{twocolentry}
+    \begin{highlights}
+        \item \textbf{Coursework:} Advanced Deep Learning for Image Analysis, Fog and Cloud Computing, Models of Concurrency
+    \end{highlights}
+\begin{twocolentry}{
+    Sept 2024 – Present
+}
+    \textbf{Sapienza University of Rome}, M.Sc. in Computer Science (in English)
+    \begin{highlights}
+        \item Average: 27.8 / 30
+        \item \textbf{Coursework:} Data Science, Artificial Intelligence, Computer Systems
+    \end{highlights}
+\end{twocolentry}
+
+\begin{twocolentry}{
+    Sept 2021 – Oct 2024
+}
+    \textbf{Sapienza University of Rome}, B.Sc. in Computer Engineering
+
+\end{twocolentry}
+    \begin{highlights}
+        \item \href{https://www.federicogerardi.ovh/bachelor_thesis.pdf}{\textbf{Thesis:}} Custom Wireless Joystick Development with Arduino and Linux Integration
+    \end{highlights}
+
+\section{Experience}
+
+\begin{twocolentry}{
+    Remote, Italy \\
+    Oct 2025 – Present
+}
+    \textbf{LeadTheFuture}, Mentee
+    \begin{highlights}
+        \item  Selected among top Italian STEM students (<20\% acceptance) for mentorship by professionals from Silicon Valley and CERN.
+    \end{highlights}
+\end{twocolentry}
+
+\begin{twocolentry}{
+    Rome, Italy \\
+    Mar 2025 – May 2025
+}
+    \textbf{Microsoft \& FabLab}, Computer Vision Engineer (Project Internship)
+    \begin{highlights}
+        \item Implemented computer vision algorithms for \textbf{object detection and recognition} in robotic navigation
+    \end{highlights}
+\end{twocolentry}
+
+
+\begin{twocolentry}{
+    Rome, Italy \\
+    Dec 2024 – Present
+}
+    \textbf{DigiLab Sapienza}, Research Assistant
+    \begin{highlights}
+        \item Conducted research in \textbf{AI, NLP, and Computer Vision} applied to Cultural Heritage
+    \end{highlights}
+\end{twocolentry}
+
+\section{Publications}
+ 
+\begin{samepage}
+    \begin{twocolentry}{
+        Sep 2025
+    }
+        \textbf{Language Modeling for Epigraphs: a BERT model
+for EDR’s Latin Epigraphs text completion}
+
+
+        
+
+% \href{https://doi.org/10.1109/TASC.2023.3340648}{10.1109/TASC.2023.3340648}
+    \end{twocolentry}
+    \begin{onecolentry}
+        
+        \mbox{Olmo Ceriotti}, \mbox{\textbf{\textit{Federico Gerardi}}}, \mbox{Saverio Giulio Malatesta}, \mbox{Silvia Orlandi} 
+        
+        \textit{Accepted at IEEE CyberHumanities 2025}
+    \end{onecolentry}
+\end{samepage}
+
+\section{Research Projects}
+
+\begin{twocolentry}{2025}
+\textbf{Graph Attention Networks for Interpretable Expected Goals Analysis in Soccer}
+
+\end{twocolentry}
+\begin{highlights}
+\item Developed a Graph Attention Network with a novel attention mechanism to predict and interpret expected goals in soccer using PyTorch and StatsBomb data.
+\end{highlights}
+
+% \begin{twocolentry}{
+% \href{https://www.federicogerardi.ovh/seaspray.pdf}{Report} \
+% 2025
+% }
+% \textbf{Seaspray: Transformers against CAPTCHA-Cloaked Phishing Websites}
+
+% \end{twocolentry}
+% \begin{highlights}
+% \item Designed a pipeline using YOLO and a Vision Transformer to counter CAPTCHA-cloaked phishing websites, achieving a 0.9 F1-score.
+% \end{highlights}
+
+\begin{twocolentry}{2025}
+\textbf{Computer vision based artist attribution for sculptures}
+
+\end{twocolentry}
+\begin{highlights}
+\item Implemented Prototypical Networks for artist attribution of sculptures, outperforming CNNs and Vision Transformers with a 0.8 F1-score. Supervised by Prof. Marco Raoul Marini.
+\end{highlights}
+
+
+\begin{twocolentry}{
+\href{https://sofa.federicogerardi.ovh/}{Link} \
+2025
+}
+\textbf{SOFA: Step-on-Foot Analyzer for Football Refereeing}
+
+\end{twocolentry}
+
+\begin{highlights}
+\item Built an automated system using YOLO and segmentation models to detect "step-on-foot" fouls in soccer, minimizing referee subjectivity. Supervised by Prof. Marco Raoul Marini.
+\end{highlights}
+\section{Technical Skills}
+
+\begin{onecolentry}
+    \textbf{Programming Languages:} Python, C++, C, Java, JavaScript/TypeScript
+\end{onecolentry}
+
+
+\begin{onecolentry}
+    \textbf{Machine Learning \& Computer Vision:} PyTorch, TensorFlow, scikit-learn, OpenCV
+\end{onecolentry}
+\begin{onecolentry}
+    \textbf{Data Management:} SQL, Pandas, 
+\end{onecolentry}
+
+
+% \begin{onecolentry}
+%     \textbf{Web Development:} Django, Flask, React, Node.js, HTML/CSS, RESTful APIs
+% \end{onecolentry}
+
+
+\begin{onecolentry}
+    \textbf{Tools \& Platforms:} Docker, Git/GitHub, Linux, LaTeX, Jupyter, NumPy, Matplotlib
+\end{onecolentry}
+
+
+\section{Languages}
+
+\begin{onecolentry}
+    \textbf{Italian}: Native
+    
+    \textbf{English}: Cambridge B2
+\end{onecolentry}
+
+
+
+\end{document}
