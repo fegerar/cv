@@ -46,3 +46,13 @@ jobs:
         with:
           files: |
             ./${{ env.FILE }}.pdf
+      - name: Update latest release
+        uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: latest
+          name: Latest CV
+          files: |
+            ./${{ env.FILE }}.pdf
+          prerelease: false
+          draft: false
