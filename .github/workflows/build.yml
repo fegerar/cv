@@ -9,10 +9,14 @@ jobs:
   build-main:
     runs-on: ubuntu-latest
     container:
-      image: adnrv/texlive:adntools
+      image: texlive/texlive:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Install LaTeX packages
+        run: |
+          tlmgr update --self
+          tlmgr install sourcesanspro fontawesome5 enumitem paracol changepage needspace lastpage bookmark eso-pic
       - name: Compile PDF
         run: |
           latexmk -pdf -pdflatex="${{ env.ENGINE }} --shell-escape %O %S" ${{ env.FILE }}
@@ -28,7 +32,7 @@ jobs:
     needs: [build-main]
     runs-on: ubuntu-latest
     container:
-      image: adnrv/texlive:adntools
+      image: texlive/texlive:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
